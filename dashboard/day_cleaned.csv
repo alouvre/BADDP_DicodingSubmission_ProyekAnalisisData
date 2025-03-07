@@ -1,4 +1,4 @@
-,instant,date,season,year,month,holiday,weekday,workingday,weather_situation,temp,atemp,humidity,wind_speed,casual,registered,count_cr,category_days
+,instant,date,season,year,month,holiday,weekday,workingday,weather_situation,temp,atemp,humidity,wind_speed,casual,registered,count_rental,category_days
 0,1,2011-01-01,Spring,2011,January,Yes,Saturday,Weekend,Misty,14.110847,18.18125,80.58330000000001,10.749882,331,654,985,weekends
 1,2,2011-01-02,Spring,2011,January,Yes,Sunday,Weekend,Misty,14.902598000000001,17.686950000000003,69.6087,16.652113,131,670,801,weekends
 2,3,2011-01-03,Spring,2011,January,Yes,Monday,Workingday,Clear,8.050924,9.47025,43.7273,16.636703,120,1229,1349,weekdays
