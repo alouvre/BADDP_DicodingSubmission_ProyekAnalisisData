@@ -1,0 +1,2 @@
+Setup Anaconda Environment on Terminal
+D:/Program_Files/Anaconda/Scripts/activate
