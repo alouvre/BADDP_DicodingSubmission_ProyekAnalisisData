@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
+st.set_page_config(page_title="Bike Share Dashboard", layout="wide")
 
 # --- Fungsi untuk Membuat DataFrame Penyewaan Harian ---
 def create_daily_casual_rent_df(df):
@@ -73,3 +76,22 @@ with col2:
 with col3:
     daily_rent_casual = main_df_days['casual'].sum()
     st.metric('Total Casual', value=daily_rent_casual)
+
+
+
+# --- Visualisasi Tren Pengguna Sepeda Berdasarkan Jam ---
+main_df_hour['period'] = main_df_hour['hour'].apply(lambda x: 'AM' if x < 12 else 'PM')
+col4, col5, col6 = st.columns([2, 1, 1])
+with col4:
+    fig, ax = plt.subplots()
+    sns.barplot(data=main_df_hour, x='hour', y='casual', hue='period', palette={"AM": "blue", "PM": "lightblue"})
+    sns.barplot(data=main_df_hour, x='hour', y='registered', hue='period', palette={"AM": "red", "PM": "salmon"}, alpha=0.7)
+    plt.xlabel("Jam")
+    plt.ylabel("Jumlah Penyewa")
+    plt.legend(title="Period")
+    plt.show()
+    st.pyplot(fig)
+with col5:
+    st.metric('Total Registered', value=main_df_days['registered'].sum())
+with col6:
+    st.metric('Total Casual', value=main_df_days['casual'].sum())
