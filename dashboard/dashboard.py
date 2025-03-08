@@ -68,7 +68,7 @@ main_df_hour = df_hour[(df_hour["date"] >= str(start_date)) &
 st.subheader('Daily Rentals')
 col1, col2, col3 = st.columns(3)
 with col1:
-    daily_rent_total = main_df_days['count_rental'].sum()
+    daily_rent_total = main_df_days['count_rent'].sum()
     st.metric('Total User', value=daily_rent_total)
 with col2:
     daily_rent_registered = main_df_days['registered'].sum()
