@@ -63,7 +63,6 @@ main_df_hour = df_hour[(df_hour["date"] >= str(start_date)) &
 
 
 # --- Konten Utama 1: Informasi Penyewaan Harian ---
-st.subheader('Daily Rentals')
 col1, col2, col3 = st.columns(3)
 with col1:
     st.metric("Total User", value=main_df_days['count_rent'].sum())
@@ -93,7 +92,8 @@ df_melted = df_yearly_users.melt(id_vars="year", var_name="user_type", value_nam
 
 with col5:
     fig, ax = plt.subplots(figsize=(8, 5))
-    sns.barplot(data=df_melted, x="year", y="count", hue="user_type", palette={"casual": "salmon", "registered": "red"}, alpha=0.9, ax=ax)
+    sns.barplot(data=df_melted, x="year", y="count", hue="user_type",
+                palette={"casual": "salmon", "registered": "red"}, alpha=0.9, ax=ax)
     plt.xlabel("Tahun")
     plt.ylabel("Jumlah Peminjaman")
     plt.title("Tren Peminjaman Sepeda: Casual vs Registered")
