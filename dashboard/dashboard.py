@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+# Konfigurasi Halaman Streamlit
 st.set_page_config(page_title="Bike Share Dashboard", layout="wide")
 
 # --- Fungsi untuk Membuat DataFrame Penyewaan Harian ---
@@ -15,7 +16,6 @@ def create_daily_casual_rent_df(df):
         'casual': 'sum'
     }).reset_index()
     return daily_casual_rent_df
-
 
 def create_daily_registered_rent_df(df):
     """
@@ -35,13 +35,11 @@ df_hour = pd.read_csv("dashboard/hour_cleaned.csv")
 
 # --- Membangun Dashboard ---
 
-# Membuat Judul
+## Membuat Judul Dashboard
 st.title("Bike Share Dashboard")
-# Nama Author
 st.caption("By Alifia Mustika Sari")
 
 # --- Sidebar: Filter Rentang Waktu ---
-# Pastikan kolom tanggal pada file CSV menggunakan nama 'date'
 min_date = df_day["date"].min()
 max_date = df_day["date"].max()
 
@@ -64,34 +62,40 @@ main_df_hour = df_hour[(df_hour["date"] >= str(start_date)) &
                        (df_hour["date"] <= str(end_date))]
 
 
-# --- Konten Utama: Informasi Penyewaan Harian ---
+# --- Konten Utama 1: Informasi Penyewaan Harian ---
 st.subheader('Daily Rentals')
 col1, col2, col3 = st.columns(3)
 with col1:
-    daily_rent_total = main_df_days['count_rent'].sum()
-    st.metric('Total User', value=daily_rent_total)
+    st.metric("Total User", value=main_df_days['count_rent'].sum())
 with col2:
-    daily_rent_registered = main_df_days['registered'].sum()
-    st.metric('Total Registered', value=daily_rent_registered)
+    st.metric("Total Registered", value=main_df_days['registered'].sum())
 with col3:
-    daily_rent_casual = main_df_days['casual'].sum()
-    st.metric('Total Casual', value=daily_rent_casual)
+    st.metric("Total Casual", value=main_df_days['casual'].sum())
 
 
+# --- Konten Utama 2: Visualisasi Tren Pengguna Sepeda ---
+col4, col5 = st.columns([1, 1])
 
-# --- Visualisasi Tren Pengguna Sepeda Berdasarkan Jam ---
+## Grafik Tren Peminjaman Sepeda Per Jam
 main_df_hour['period'] = main_df_hour['hour'].apply(lambda x: 'AM' if x < 12 else 'PM')
-col4, col5, col6 = st.columns([2, 1, 1])
 with col4:
-    fig, ax = plt.subplots()
-    sns.barplot(data=main_df_hour, x='hour', y='casual', hue='period', palette={"AM": "blue", "PM": "lightblue"})
-    sns.barplot(data=main_df_hour, x='hour', y='registered', hue='period', palette={"AM": "red", "PM": "salmon"}, alpha=0.7)
+    fig, ax = plt.subplots(figsize=(8, 5))
+    sns.barplot(data=main_df_hour, x='hour', y='count_rent', hue='period', palette={"AM": "salmon", "PM": "red"}, alpha=0.9, ax=ax)
     plt.xlabel("Jam")
-    plt.ylabel("Jumlah Penyewa")
-    plt.legend(title="Period")
-    plt.show()
+    plt.ylabel("Jumlah Peminjaman")
+    plt.title("Tren Peminjaman Sepeda Per Jam")
+    plt.legend(title="Waktu")
     st.pyplot(fig)
+
+## Grafik Tren Peminjaman Sepeda Tahunan Berdasarkan Tipe Pengguna
+df_yearly_users = main_df_days.groupby('year', as_index=False)[['casual', 'registered']].sum()
+df_melted = df_yearly_users.melt(id_vars="year", var_name="user_type", value_name="count")
+
 with col5:
-    st.metric('Total Registered', value=main_df_days['registered'].sum())
-with col6:
-    st.metric('Total Casual', value=main_df_days['casual'].sum())
+    fig, ax = plt.subplots(figsize=(8, 5))
+    sns.barplot(data=df_melted, x="year", y="count", hue="user_type", palette={"casual": "salmon", "registered": "red"}, alpha=0.9, ax=ax)
+    plt.xlabel("Tahun")
+    plt.ylabel("Jumlah Peminjaman")
+    plt.title("Tren Peminjaman Sepeda: Casual vs Registered")
+    plt.legend(title="Tipe Pengguna")
+    st.pyplot(fig)
