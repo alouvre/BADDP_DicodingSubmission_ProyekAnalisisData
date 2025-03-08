@@ -32,7 +32,6 @@ def create_monthly_users_df(df):
         "casual": "casual_rides",
         "registered": "registered_rides"
     }, inplace=True)
-    
     return monthly_users_df
 
 # --- Tren Peminjaman Sepeda Per Jam ---
@@ -41,34 +40,40 @@ def plot_hourly_trend(df):
     max_hour = hourly_data.loc[hourly_data["count_rent"].idxmax(), "hour"]
     hourly_data["color"] = hourly_data["hour"].apply(lambda x: 'red' if x == max_hour else '#D3D3D3')
     fig = px.bar(
-        hourly_data, x='hour', y='count_rent', color='color', 
+        hourly_data, x='hour', y='count_rent', color='color',
         color_discrete_map='identity', barmode='group',
-        title="Jam dengan Jumlah Penyewaan Sepeda Tertinggi")
-    fig.update_layout(xaxis_title="Jam", yaxis_title="Jumlah Penyewa", 
-                      showlegend=True)
+        title="Jam dengan Jumlah Peminjaman Sepeda Tertinggi")
+    fig.update_layout(xaxis_title="Jam", yaxis_title="Jumlah Peminjam",
+                      showlegend=False)
     return fig
 
-# --- Tren Peminjaman Sepeda Tahunan Berdasarkan Tipe Pengguna ---
-def plot_yearly_trend(df):
+# --- Tren Peminjaman Sepeda Tahunan Berdasarkan Tipe Pengguna (Pie Chart) ---
+def plot_yearly_trend_pie(df):
     yearly_data = df.groupby("year", as_index=False)[["casual", "registered"]].sum()
-    df_melted = yearly_data.melt(id_vars="year", var_name="user_type", value_name="count")
-    fig = px.bar(
-        df_melted, x="year", y="count", color="user_type", barmode='group',
+    yearly_total = yearly_data.melt(id_vars="year", var_name="user_type", value_name="count")
+    fig = px.pie(
+        yearly_total,
+        names="user_type",
+        values="count",
+        title="Distribusi Pengguna Casual vs Registered",
+        hole=0.3,  # Membuatnya tampak seperti donut chart
+        color="user_type",
         color_discrete_map={"casual": "#D3D3D3", "registered": "red"},
-        title="Pengguna Casual vs Registered",
-        labels={'year': 'Tahun', 'count': 'Jumlah Peminjaman', 'user_type': 'Tipe Pengguna'})
-    fig.update_layout(xaxis_title="Tahun", yaxis_title="Jumlah Penyewa", 
-                      showlegend=True)
+        labels={'count': 'Jumlah Peminjaman'}
+    )
+    fig.update_layout(showlegend=False)
+    fig.update_traces(textinfo="percent+label", pull=[0.1, 0])
     return fig
 
 # --- Tren Bulanan ---
 def plot_monthly_trend(df):
-    fig = px.line(df, x='yearmonth', y=['casual_rides', 'registered_rides', 'total_rides'],
-                  color_discrete_sequence=["#D3D3D3", "orange", "red"],
-                  markers=True,
-                  title="Monthly Count of Bikeshare Rides",
-                  labels={'yearmonth': 'Tahun-Bulan'})                  
-    fig.update_layout(yaxis_title='Jumlah Penyewa')
+    fig = px.line(
+        df, x='yearmonth', y=['casual_rides', 'registered_rides', 'total_rides'],
+        color_discrete_sequence=["#D3D3D3", "orange", "red"],
+        markers=True,
+        title="Tren Peminjaman Sepeda Bulanan",
+        labels={'yearmonth': 'Bulan-Tahun'})
+    fig.update_layout(yaxis_title='Jumlah Peminjam')
     return fig
 
 
@@ -118,7 +123,7 @@ with col3:
 # ===== CHART =====
 col4, col5 = st.columns([2, 1])
 col4.plotly_chart(plot_hourly_trend(main_df_hour), use_container_width=True)
-col5.plotly_chart(plot_yearly_trend(main_df_days), use_container_width=True)
+col5.plotly_chart(plot_yearly_trend_pie(main_df_days), use_container_width=True)
 st.plotly_chart(plot_monthly_trend(monthly_users_df), use_container_width=True)
 
 
