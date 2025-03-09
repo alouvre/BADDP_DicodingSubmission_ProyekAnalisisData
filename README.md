@@ -3,17 +3,18 @@
 
 ## Description
 
-This project is part of the bike sharing data analysis project to analyze the Bike Sharing Dataset. The results of the analysis are then made into the form of data visualization into an interactive dashboard.
+This project is a part of the bike-sharing data analysis initiative, focusing on examining the Bike Sharing Dataset. The analysis results are then transformed into interactive data visualizations within a dashboard.
 
 ## Directory
 
-- `/image`: stores image and video assets used in this project
 - `/dashboard`: contains the file `func.py` which stores the functions needed by the dashboard
 - `/data`: stores data used in the data analysis project
+- `/image`: stores image and video assets used in this project
 - `README.md`: file that provides information about this GitHub project
-<!-- - `app.py`: main file to run the dashboard -->
 - `notebook.ipynb`: interactive jupyter notebook files to analyze data
 - `requirements.txt`: file that stores information about the libraries used in this project
+- `url.txt`: File containing links to the dashboard.
+<!-- - `app.py`: main file to run the dashboard -->
 
 ## Installation
 
