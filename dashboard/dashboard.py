@@ -177,7 +177,20 @@ col6.plotly_chart(plot_monthly_trend(monthly_users_df), use_container_width=True
 col7.plotly_chart(plot_seasonly_users(main_df_days), use_container_width=True, key="seasonal_trend")
 
 
-# ===== HIDE STREAMLIT STYLE =====
+# ===== STREAMLIT STYLE =====
+# CSS untuk membuat sidebar lebih sempit
+st.markdown(
+    """
+    <style>
+        [data-testid="stSidebar"] {
+            min-width: 300px; /* Lebar sidebar lebih kecil */
+            max-width: 300px;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 hide_st_style = """
                 <style>
                 #MainMenu {visibility: hidden;}
