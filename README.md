@@ -41,7 +41,7 @@ The steps to create your virtual environment from this project is as follows:
 
 5. Run the Streamlit Dashboard
    ```bash
-   streamlit run app.py
+   streamlit run dashboard/dashboard.py
    ```
 
 6. Stop the application program by `ctrl + c`.
