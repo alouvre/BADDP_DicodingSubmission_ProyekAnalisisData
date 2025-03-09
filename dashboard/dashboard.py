@@ -28,9 +28,9 @@ def create_monthly_users_df(df):
     monthly_users_df = monthly_users_df.reset_index()
     monthly_users_df.rename(columns={
         "date": "yearmonth",
-        "count_rent": "total_pengguna",
-        "casual": "total_casual",
-        "registered": "total_registered"
+        "count_rent": "total",
+        "casual": "casual",
+        "registered": "registered"
     }, inplace=True)
     return monthly_users_df
 
@@ -54,28 +54,28 @@ def plot_hourly_trend(df):
         legend_title="Tipe Waktu")
     return fig
 
-# --- Tren Peminjaman Sepeda Tahunan Berdasarkan Tipe Pengguna (Pie Chart) ---
-def plot_yearly_trend_pie(df):
-    yearly_data = df.groupby("year", as_index=False)[["casual", "registered"]].sum()
-    yearly_total = yearly_data.melt(id_vars="year", var_name="user_type", value_name="count")
-    fig = px.pie(
-        yearly_total,
-        names="user_type",
-        values="count",
-        title="Distribusi Pengguna Casual & Registered",
-        hole=0.3,  # Membuatnya tampak seperti donut chart
+
+# --- Tren Peminjaman Sepeda Tahunan Berdasarkan Tipe Pengguna ---
+def plot_yearly_trend(df):
+    df_melted = df.melt(id_vars="year", value_vars=["casual", "registered"], 
+                        var_name="user_type", value_name="count")
+    fig = px.bar(
+        df_melted,
+        x="year",
+        y="count",
         color="user_type",
-        color_discrete_map={"casual": "#D3D3D3", "registered": "red"},
-        labels={'count': 'Jumlah Peminjaman'}
+        barmode="group",
+        title="Tren Peminjaman Sepeda: Casual vs Registered",
+        labels={"year": "Tahun", "count": "Jumlah Peminjaman"},
+        color_discrete_map={"casual": "#D3D3D3", "registered": "red"}
     )
-    fig.update_layout(showlegend=False)
-    fig.update_traces(textinfo="percent+label", pull=[0.1, 0])
+    fig.update_layout(legend_title="Tipe Pengguna")
     return fig
 
 # --- Tren Bulanan ---
 def plot_monthly_trend(df):
     fig = px.line(
-        df, x='yearmonth', y=['total_casual', 'total_registered', 'total_pengguna'],
+        df, x='yearmonth', y=['casual', 'registered', 'total'],
         color_discrete_sequence=["#D3D3D3", "orange", "red"],
         markers=True,
         title="Tren Jumlah Pengguna Layanan Bike-Sharing Per Bulan",
@@ -85,6 +85,41 @@ def plot_monthly_trend(df):
         yaxis_title="Jumlah Pengguna Bike-Sharing",
         xaxis_title="Bulan-Tahun",
         legend_title="Tipe Pengguna"
+    )
+    return fig
+
+# --- Tren Musim ---
+def plot_seasonly_users(df):
+    # --- Mengelompokkan dan Mengurutkan Data ---
+    seasonly_users_df_sorted = df.groupby("season", as_index=False)["count_rent"].sum()
+    seasonly_users_df_sorted = seasonly_users_df_sorted.sort_values(by="count_rent", ascending=False)
+
+    # Menentukan musim dengan jumlah peminjaman tertinggi
+    max_season = seasonly_users_df_sorted.iloc[0]["season"]
+
+    # Membuat warna: merah untuk yang tertinggi, abu-abu untuk lainnya
+    seasonly_users_df_sorted["color"] = seasonly_users_df_sorted["season"].apply(
+        lambda season: "red" if season == max_season else "#D3D3D3"
+    )
+
+    # Membuat plot dengan Plotly
+    fig = px.bar(
+        seasonly_users_df_sorted,
+        x="count_rent",
+        y="season",
+        orientation="h",
+        color="color",
+        color_discrete_map="identity",
+        text="count_rent",
+        title="Jumlah Pengguna Layanan Bike-Sharing Per Musim",
+        labels={"count_rent": "Total Pengguna", "season": "Musim"}
+    )
+
+    fig.update_traces(texttemplate="%{text}", textposition="outside")
+    fig.update_layout(
+        showlegend=False,
+        xaxis_title="Total Pengguna Layanan Bike-Sharing",
+        yaxis_title="Musim"
     )
     return fig
 
@@ -135,9 +170,11 @@ with col3:
 # ===== CHART =====
 col4, col5 = st.columns([2, 1])
 col4.plotly_chart(plot_hourly_trend(main_df_hour), use_container_width=True, key="hourly_trend")
-col5.plotly_chart(plot_yearly_trend_pie(main_df_days), use_container_width=True, key="yearly_trend")
-st.plotly_chart(plot_monthly_trend(monthly_users_df), use_container_width=True, key="monthly_trend")
+col5.plotly_chart(plot_yearly_trend(main_df_days), use_container_width=True, key="yearly_trend")
 
+col6, col7 = st.columns([1.8, 1.2])
+col6.plotly_chart(plot_monthly_trend(monthly_users_df), use_container_width=True, key="monthly_trend")
+col7.plotly_chart(plot_seasonly_users(main_df_days), use_container_width=True, key="seasonal_trend")
 
 
 # ===== HIDE STREAMLIT STYLE =====
