@@ -172,9 +172,9 @@ col4, col5 = st.columns([2, 1])
 col4.plotly_chart(plot_hourly_trend(main_df_hour), use_container_width=True, key="hourly_trend")
 col5.plotly_chart(plot_yearly_trend(main_df_days), use_container_width=True, key="yearly_trend")
 
-col6, col7 = st.columns([1.8, 1.2])
-col6.plotly_chart(plot_monthly_trend(monthly_users_df), use_container_width=True, key="monthly_trend")
-col7.plotly_chart(plot_seasonly_users(main_df_days), use_container_width=True, key="seasonal_trend")
+# col6, col7 = st.columns([1.8, 1.2])
+st.plotly_chart(plot_monthly_trend(monthly_users_df), use_container_width=True, key="monthly_trend")
+st.plotly_chart(plot_seasonly_users(main_df_days), use_container_width=True, key="seasonal_trend")
 
 
 # ===== STREAMLIT STYLE =====
