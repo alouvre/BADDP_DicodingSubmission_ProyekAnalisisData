@@ -92,10 +92,10 @@ def plot_monthly_trend(df):
 def plot_seasonly_users(df):
     # --- Mengelompokkan dan Mengurutkan Data ---
     seasonly_users_df_sorted = df.groupby("season", as_index=False)["count_rent"].sum()
-    seasonly_users_df_sorted = seasonly_users_df_sorted.sort_values(by="count_rent", ascending=False)
+    seasonly_users_df_sorted = seasonly_users_df_sorted.sort_values(by="count_rent", ascending=True)
 
     # Menentukan musim dengan jumlah peminjaman tertinggi
-    max_season = seasonly_users_df_sorted.iloc[0]["season"]
+    max_season = seasonly_users_df_sorted.iloc[-1]["season"]
 
     # Membuat warna: merah untuk yang tertinggi, abu-abu untuk lainnya
     seasonly_users_df_sorted["color"] = seasonly_users_df_sorted["season"].apply(
