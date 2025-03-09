@@ -1,12 +1,17 @@
 # BADDP_DicodingSubmission_ProyekAnalisisData
 
+
+## Description
+
+This project is part of the bike sharing data analysis project to analyze the Bike Sharing Dataset. The results of the analysis are then made into the form of data visualization into an interactive dashboard.
+
 ## Directory
 
-- `/assets`: stores image and video assets used in this project
+- `/image`: stores image and video assets used in this project
 - `/dashboard`: contains the file `func.py` which stores the functions needed by the dashboard
-- `dataset`: stores data used in the data analysis project
+- `/data`: stores data used in the data analysis project
 - `README.md`: file that provides information about this GitHub project
-- `app.py`: main file to run the dashboard
+<!-- - `app.py`: main file to run the dashboard -->
 - `notebook.ipynb`: interactive jupyter notebook files to analyze data
 - `requirements.txt`: file that stores information about the libraries used in this project
 
