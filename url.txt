@@ -1,5 +1,2 @@
 # URL
 https://bikeshare-dashboard-dicoding-submission.streamlit.app/
-
-Setup Anaconda Environment on Terminal
-D:/Program_Files/Anaconda/Scripts/activate
