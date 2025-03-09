@@ -130,7 +130,7 @@ df_day, df_hour = load_data()
 
 # ===== SIDEBAR =====
 with st.sidebar:
-    st.image(r"image\logo.png")
+    st.image("image\logo.png")
     st.sidebar.header("Filter:")
     min_date, max_date = df_day["date"].min(), df_day["date"].max()
     start_date, end_date = st.date_input(
