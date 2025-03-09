@@ -12,7 +12,7 @@ This project is a part of the bike-sharing data analysis initiative, focusing on
 - `README.md`: file that provides information about this GitHub project
 - `notebook.ipynb`: interactive jupyter notebook files to analyze data
 - `requirements.txt`: file that stores information about the libraries used in this project
-- `url.txt`: File containing links to the dashboard.
+- `url.txt`: file containing links to the dashboard.
 <!-- - `app.py`: main file to run the dashboard -->
 
 ## Installation
