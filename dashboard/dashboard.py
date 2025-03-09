@@ -28,23 +28,30 @@ def create_monthly_users_df(df):
     monthly_users_df = monthly_users_df.reset_index()
     monthly_users_df.rename(columns={
         "date": "yearmonth",
-        "count_rent": "total_rides",
-        "casual": "casual_rides",
-        "registered": "registered_rides"
+        "count_rent": "total_pengguna",
+        "casual": "total_casual",
+        "registered": "total_registered"
     }, inplace=True)
     return monthly_users_df
 
 # --- Tren Peminjaman Sepeda Per Jam ---
 def plot_hourly_trend(df):
-    hourly_data = df.groupby("hour", as_index=False)["count_rent"].sum()
-    max_hour = hourly_data.loc[hourly_data["count_rent"].idxmax(), "hour"]
-    hourly_data["color"] = hourly_data["hour"].apply(lambda x: 'red' if x == max_hour else '#D3D3D3')
+    hourly_data = main_df_hour.groupby("hour", as_index=False)["count_rent"].sum()
+    rush_hours = [8, 17]  # Morning rush jam 08:00 dan evening rush jam 17:00
+    hourly_data["rush"] = hourly_data["hour"].apply(lambda x: "Rush Hour" if x in rush_hours else "Normal")
     fig = px.bar(
-        hourly_data, x='hour', y='count_rent', color='color',
-        color_discrete_map='identity', barmode='group',
-        title="Jam dengan Jumlah Peminjaman Sepeda Tertinggi")
-    fig.update_layout(xaxis_title="Jam", yaxis_title="Jumlah Peminjam",
-                      showlegend=False)
+        hourly_data,
+        x="hour",
+        y="count_rent",
+        color="rush",  # Memberi warna berbeda untuk jam sibuk
+        color_discrete_map={"Rush Hour": "red", "Normal": "#D3D3D3"},
+        labels={"hour": "Jam", "count_rent": "Total Penyewa"},
+        title="Tren Jumlah Pengguna Layanan Bike-Sharing Per Jam")
+    fig.update_layout(
+        xaxis=dict(tickmode="linear", dtick=1),
+        yaxis_title="Jumlah Pengguna Bike-Sharing",
+        xaxis_title="Jam",
+        legend_title="Tipe Waktu")
     return fig
 
 # --- Tren Peminjaman Sepeda Tahunan Berdasarkan Tipe Pengguna (Pie Chart) ---
@@ -68,12 +75,17 @@ def plot_yearly_trend_pie(df):
 # --- Tren Bulanan ---
 def plot_monthly_trend(df):
     fig = px.line(
-        df, x='yearmonth', y=['casual_rides', 'registered_rides', 'total_rides'],
+        df, x='yearmonth', y=['total_casual', 'total_registered', 'total_pengguna'],
         color_discrete_sequence=["#D3D3D3", "orange", "red"],
         markers=True,
-        title="Tren Peminjaman Sepeda Bulanan",
+        title="Tren Jumlah Pengguna Layanan Bike-Sharing Per Bulan",
         labels={'yearmonth': 'Bulan-Tahun'})
-    fig.update_layout(yaxis_title='Jumlah Peminjam')
+    fig.update_layout(
+        xaxis=dict(tickmode="linear", dtick=1),
+        yaxis_title="Jumlah Pengguna Bike-Sharing",
+        xaxis_title="Bulan-Tahun",
+        legend_title="Tipe Pengguna"
+    )
     return fig
 
 
@@ -113,7 +125,7 @@ st.title("Capital Bikeshare: Dashboard")
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.metric("Total User", value=main_df_days['count_rent'].sum())
+    st.metric("Total Pengguna", value=main_df_days['count_rent'].sum())
 with col2:
     st.metric("Total Registered", value=main_df_days['registered'].sum())
 with col3:
@@ -122,9 +134,10 @@ with col3:
 
 # ===== CHART =====
 col4, col5 = st.columns([2, 1])
-col4.plotly_chart(plot_hourly_trend(main_df_hour), use_container_width=True)
-col5.plotly_chart(plot_yearly_trend_pie(main_df_days), use_container_width=True)
-st.plotly_chart(plot_monthly_trend(monthly_users_df), use_container_width=True)
+col4.plotly_chart(plot_hourly_trend(main_df_hour), use_container_width=True, key="hourly_trend")
+col5.plotly_chart(plot_yearly_trend_pie(main_df_days), use_container_width=True, key="yearly_trend")
+st.plotly_chart(plot_monthly_trend(monthly_users_df), use_container_width=True, key="monthly_trend")
+
 
 
 # ===== HIDE STREAMLIT STYLE =====
