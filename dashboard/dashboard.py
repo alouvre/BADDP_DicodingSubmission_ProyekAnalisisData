@@ -62,7 +62,7 @@ def plot_yearly_trend_pie(df):
         yearly_total,
         names="user_type",
         values="count",
-        title="Distribusi Pengguna Casual vs Registered",
+        title="Distribusi Pengguna Casual & Registered",
         hole=0.3,  # Membuatnya tampak seperti donut chart
         color="user_type",
         color_discrete_map={"casual": "#D3D3D3", "registered": "red"},
